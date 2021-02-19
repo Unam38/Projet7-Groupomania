@@ -36,16 +36,6 @@
           (?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/"
         />
       </div>
-      <div class="input-box">
-        <label for="date"></label>
-        <b-icon-calendar2-date class="icone" />
-        <input
-          v-model="created_at"
-          placeholder="Ici la date du jour svp"
-          id="date"
-          type="date"
-        />
-      </div>
       <div class="submit-btn-container">
         <button
           v-on:click.prevent="createArticle"
@@ -72,18 +62,17 @@ export default {
         title: "",
         body:"",
         image: "",
-        created_at:"",
         user_id: ""
       }
     }
   },
   methods: {
     createArticle() {
+      console.log(this.createdAt);
       axios.post("auth/createArticle", {
           title: this.title,
           body: this.body,
           image: this.image,
-          created_at: this.created_at,
           user_id: this.user[0].id
         })
         .then(response => {

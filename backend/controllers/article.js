@@ -72,3 +72,7 @@ exports.getArticlesOfOneUser = (req, res, next) => {
         .then(articles => res.status(200).json(articles))
         .catch(error => res.status(404).json({ error }));
 };
+
+
+
+

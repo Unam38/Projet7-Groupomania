@@ -22,4 +22,6 @@ router.get('/article/:id', auth, articleCtrl.getOneArticle);
 // Récupérer TOUS les articles d'UN utilisateur OK
 router.get('/articles/user/:user_id', auth, articleCtrl.getArticlesOfOneUser);
 
+
+
 module.exports = router;

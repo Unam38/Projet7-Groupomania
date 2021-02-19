@@ -76,6 +76,10 @@ export default {
       })
     },
     deleteUser() {
+      if (
+        confirm("etes vous sûr de vouloir supprimer le profil ?") &&
+        confirm("La suppression efface toutes les publications...")
+      ) {
       axios.delete(`auth/user/delete/${this.user[0].id}`)
       .then(() => {
         alert('Utilisateur supprimé !');
@@ -88,6 +92,7 @@ export default {
           console.log(error);
           alert('une erreur !');
       })
+      }
     },
     ...mapActions({
       logOutAction: 'auth/logout'

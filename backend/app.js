@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const userRoutes = require('./routes/user');
 const articleRoutes = require('./routes/article');
 const commentRoutes = require('./routes/comment');
+const likesRoutes = require('./routes/likes');
 
 
 const app = express();
@@ -31,5 +32,6 @@ app.use(bodyParser.json());
 app.use('/api/auth', userRoutes);
 app.use('/api/auth', articleRoutes);
 app.use('/api/auth', commentRoutes);
+app.use('/api/auth', likesRoutes);
 
 module.exports = app;

@@ -37,7 +37,7 @@ exports.findAllComments = (req, res) => {
 
 // Modifier un commentaire OK
 exports.updateComment = (req, res) => {
-    let commentId= req.params.commentId;
+    let commentId = req.params.commentId;
     let body = JSON.stringify(req.body.body);
     console.log(commentId + body);
     Comment.updateOne(commentId, body)

@@ -92,6 +92,6 @@ Comment.findById = (commentId) => {
             }
         )
     })
-}
+};
 
 module.exports = Comment;

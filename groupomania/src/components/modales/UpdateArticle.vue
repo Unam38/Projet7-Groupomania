@@ -37,10 +37,10 @@
       </form>
       <button
         v-on:click.prevent="updateArticle()"
-        class="submit"
+        class="boutton"
         type="submit"
-      >
-      Go !!
+        >
+        Go !!
       </button>
     </div>
   </article>
@@ -85,7 +85,7 @@ export default {
           let data = response.data;
           console.log(data);
           this.data = alert(
-            "l'article"+ data.title +"a bien été modifié"
+            "l'article a bien été modifié"
           );
           this.$router.replace({
             name: 'Home'
@@ -117,46 +117,69 @@ export default {
   justify-content: center;
   align-content: center;
   .card {
-    background-color: $color6;
-    padding: 2%;
     display: flex;
     flex-direction: column;
-    position: relative;
-    margin: 120px auto;
+    justify-content: center;
+    align-content: center;;
+    margin: auto;
+    padding: 1% 1% 5% 1%;
+    background-color: $color2;
+    z-index: 1000;
     .card-title {
-      font-size: 1.5em;
-      color: $color4;
+      font-family: $font2;
+      text-align: center;
+      font-size: 1.2em;
+      color: $color6;
+      margin: 0;
+      @media screen and (min-width: 600px) {
+        font-size: 1.6em;
+      }
+      @media screen and (min-width: 1024px) {
+        font-size: 2em;
+      }
     }
-    .profile {
+    .profile{
       display: flex;
-      flex-direction: row;
-      justify-content: space-around;
+      flex-flow: row wrap;
       align-items: center;
-      background-color: $color6;
+      justify-content: space-around;
+      padding: 2%;
+      margin: 0 2% 0 2%;
+      width: 90%;
+      @media screen and (min-width: 600px) {
+        font-size: 1.6em;
+      }
       .box {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        margin: 2px auto;
-        border: 1px solid $color4;
-        label {
-          font-family: $font2;
-          font-size: 1.2em;
-          color: $color1;
-        }
-        input {
-          background-color: transparent;
-          border-style: none;
-        }
+        max-width: 30%;
       }
     }
-    .modify {
-      margin: 20px auto;
+    .boutton {
+      text-align: center;
+      margin: auto;
+      border: 2px solid $color6;
       border-radius: 30px;
+      background-color: $color1;
+      color: $color6;
+      box-shadow: 6px 6px 8px $color6;
+      position: relative;
+      @media screen and (min-width: 600px) {
+        font-size: 1.6em;
+        padding: 2%;
+      }
+    }
+    .boutton:hover {
+      top: 2px;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px $color6;
+      color: $color7;
+    }
+    .boutton:active {
+      top: 4px;
+      cursor: pointer;
+      box-shadow: 0 0 4px $color6;
       color: $color4;
-      background-color: $color6;
-      margin: 30px auto;
     }
   }
 }

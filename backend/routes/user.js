@@ -17,7 +17,7 @@ const userCtrl = require('../controllers/user');
 // Déconnection de l'utilisateur
     router.post('/logout', auth, userCtrl.logout)
 
-// Trouver Un utilisateur par son id (Admin) OK
+// Trouver Un utilisateur par son id OK
     router.get('/user/:id', auth, userCtrl.getOneUserById);
 
 // Retrouver tous les utilisateurs (Admin) OK

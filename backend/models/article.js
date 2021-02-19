@@ -6,7 +6,6 @@ const Article = function(article) {
     this.title = article.title,
     this.body = article.body,
     this.image = article.image,
-    this.created_at = article.created_at,
     this.user_id = article.user_id
 };
 
@@ -71,7 +70,8 @@ Article.findAll = (result) => {
             } else {
                 result(null, {articles: res});
             }
-    });
+        }
+    )
 };
 
 // Chercher un article par son id OK
@@ -105,5 +105,7 @@ Article.findAllByUser = (user_id) => {
         )
     })
 };
+
+
 
 module.exports = Article;

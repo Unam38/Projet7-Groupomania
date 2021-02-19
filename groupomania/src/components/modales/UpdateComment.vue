@@ -1,8 +1,8 @@
 <template>
   <div class="update-comment">
-    <form class="upComment" action="" method="post">
-      <h2>Quelque chose à modifier ?</h2>
-      <div class="input-box">
+    <form class="upComment card col-xs-11 col-sm-11 col-md-9 col-lg-8 col-xl-8" action="" method="post">
+      <h2 class="card-title">Quelque chose à changer ?</h2>
+      <div class="input-box card-body">
         <b-icon-newspaper class="icone"/>
         <input
           v-bind:placeholder="comment.body"
@@ -12,20 +12,20 @@
           pattern="[a-zA-ZÀ-ÿ]{1,512}"
           />
       </div>
-        <div class="submit-btn-container">
-            <button
-                v-on:click.prevent="updateComment()"
-                class="submit"
-                type=""
-                >
-                <span class="envoyer"><b-icon-signpost class="icone"/>Modifier !</span>
-            </button>
-            <button
-                v-on:click.prevent="deleteComment()"
-                class="delete">
-                <span class="effacer"><b-icon-trash class="icone"/>Effacer !</span>
-            </button>
-        </div>
+      <div class="submit-btn-container">
+          <button
+              v-on:click.prevent="updateComment()"
+              class="boutton"
+              type=""
+              >
+              <span class="i1"><b-icon-signpost class="icone"/>Modifier</span>
+          </button>
+          <button
+              v-on:click.prevent="deleteComment()"
+              class="boutton">
+              <span class="i2"><b-icon-trash class="icone"/>Effacer</span>
+          </button>
+      </div>
     </form>
   </div>
 </template>
@@ -111,120 +111,101 @@ export default {
 
 <style scoped lang="scss">
 .update-comment {
-    background-color: $color6;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 50px;
-    .upComment {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 500px;
-        background: $color1;
-        margin: 8% auto;
-        padding: 50px 0;
-        color: $color6;
-        box-shadow: 0 0 10px 3px $color3;
-        h2 {
-            font-size: 1.5em;
-            font-family: $font1;
-            color: $color6;
-            padding: 5px 10px 5px 10px;
-            border-bottom: 2px solid $color6;
-            border-radius: 0 0 30px 0;
-            box-shadow: 2px 2px 2px $shad1;
-        }
-        .input-box {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            width: 80%;
-            border-bottom: 1px solid $color4;
-            border-radius: 0 0 30px 0;
-            padding: 10px 10px 5px 0;
-            input {
-                width: 90%;
-                border: none;
-                outline: none;
-                background: transparent;
-                font-family: $font1;
-                font-size: 1.2em;
-                color: $color6;
-            }
-        }
-        ::placeholder {
-            color: $color6;
-        }
-        .icone {
-            margin-right: 10px;
-            color: $color3;
-            font-size: 1.5em;
-            text-shadow: 2px 2px 2px $shad1;
-        }
-        a {
-            text-decoration: none;
-        }
-        .submit-btn-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            align-items: center;
-            width: 80%;
-            .submit {
-                display: block;
-                position: relative;
-                text-decoration: none;
-                margin: 40px auto 20px;
-                cursor: pointer;
-                font-size: 2em;
-                background-color: $color6;
-                color: $color4;
-                border: none;
-                padding: 10px;
-                border-radius: 30px;
-                .envoyer {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    font-size: 1em;
-                    font-family: $font2;
-                    .icone {
-                        color: $color4;
-                        font-size: 1.5em;
-                    }
-                }
-            }
-            .delete {
-                display: block;
-                position: relative;
-                text-decoration: none;
-                margin: 40px auto 20px;
-                cursor: pointer;
-                font-size: 2em;
-                background-color: $color6;
-                color: $color4;
-                border: none;
-                padding: 10px;
-                border-radius: 30px;
-                .effacer {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    font-size: 1em;
-                    font-family: $font2;
-                    .icone {
-                        color: $color4;
-                        font-size: 1.5em;
-                    }
-                }
-            }
-        }
+  background: #000000c4;
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  .upComment { // card
+    margin: auto;
+    padding: 1% 1% 5% 1%;
+    background-color: $color2;
+    z-index: 1000;
+    .card-title {
+      font-family: $font2;
+      text-align: center;
+      font-size: 1.2em;
+      color: $color6;
+      margin: 0;
+      @media screen and (min-width: 600px) {
+        font-size: 1.6em;
+      }
+      @media screen and (min-width: 1024px) {
+        font-size: 2em;
+      }
     }
+    .input-box {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      padding: 5%;
+      margin: 2%;
+      width: 90%;
+      @media screen and (min-width: 600px) {
+        font-size: 1.6em;
+      }
+      .icone {
+        color: $color6;
+        font-size: 1.5em;
+        margin: auto;
+      }
+      input {
+        width: 80%;
+        font-family: $font2;
+        color: $color1;
+        font-size: 1.2em;
+      }
+
+    }
+    .submit-btn-container {
+      width: 90%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      .boutton {
+        border: 2px solid $color6;
+        border-radius: 30px;
+        background-color: $color1;
+        color: $color6;
+        box-shadow: 6px 6px 8px $color6;
+        position: relative;
+        @media screen and (min-width: 600px) {
+          font-size: 1.6em;
+          padding: 2%;
+        }
+        .i1 {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2%;
+        }
+        .i2 {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2%;
+        }
+      }
+      .boutton:hover {
+        top: 2px;
+        cursor: pointer;
+        box-shadow: 2px 2px 6px $color6;
+        color: $color7;
+      }
+      .boutton:active {
+        top: 4px;
+        cursor: pointer;
+        box-shadow: 0 0 4px $color6;
+        color: $color4;
+      }
+    }
+  }
 }
 </style>

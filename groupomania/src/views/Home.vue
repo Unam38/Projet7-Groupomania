@@ -3,17 +3,20 @@
     <button class="btn">
       <router-link to="/NewArticle">Créez un nouvel article <i class="fas fa-plus-circle"></i></router-link>
     </button>
-  
     <article class="home_detail">
       <div class="card-cart-container">
-        <div :key="index" v-for="(article, index) in articles" class="col-xs-12 col-md-3 col-lg-3 card-container">
+        <div
+          v-for="(article, index) in articles"
+          :key="index"
+          class="col-xs-12 col-md-3 col-lg-3 card-container">
           <router-link :to='`/Article/${article.id}`'> 
-            <div class="card">
+            <div v-on:mounted="getLikes(article.id)" class="card">
               <h4 class="card__title">{{ article.title }}</h4>
               <div class="card__img">
                 <img v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" class="card-image"/>
               </div>
               <p class="card__body">{{ article.body }}</p>
+              <p class="card-date">{{ article.createdAt | moment('calendar') }}</p>
               <div v-if="authenticated" class="like-dislike">
                 <div class="like">
                   <b-icon-hand-thumbs-up class="icone"/>
@@ -41,21 +44,35 @@ export default {
   data: () => {
     return {
       articles: [],
+      likes: []
     }
   },
   mounted: function() {
     this.getArticles();
   },
   methods: {
-    getArticles() {
-      axios.get("auth/articles")
+    async getArticles() {
+      await axios.get("auth/articles")
       .then(response => {
         let data = response.data;
         this.articles = data.articles;
+        console.log(this.articles);
       })
       .catch(error => {
         this.data = alert("erreur, rien a afficher !");
         console.log('pas coucou' + error);
+      })
+    },
+    async getLikes(articleId) {
+      console.log(typeof articleId);
+      await axios.get(`auth/likesDislikes/${articleId}`)
+      .then(response => {
+        let data = response.data;
+        this.likes = data
+      })
+      .catch(error => {
+        this.data = alert('Erreur mon chouchou !');
+        console.log('tu peux mieux faire lapinou !' + error);
       })
     }
   },
@@ -150,24 +167,40 @@ export default {
             margin: 10px;
             padding: 0;
             img{
-               width: 100%;
-               border-radius: 20px;
+              width: 100%;
+              border-radius: 20px;
             }
           }
           &__body{
-            background-color: $color5;
+            background-color: $color2;
             font-family: $font1;
             color: $color6;
-            width: 96%;
+            width: 94%;
             max-height: 200px;
-            margin: 2%;
-            padding: 5px;
-            font-size: 1.5em;
+            margin: 3%;
+            padding: 3%;
+            font-size: 1em;
             border-radius: 30px;
             box-shadow: 0 5px 5px $shad1;
             word-wrap: break-word;
             overflow: hidden;
-            text-overflow: ellipsis; 
+            text-overflow: ellipsis;
+            @media screen and (min-width: 768px) {
+              font-size: 1.5em;
+            }
+          }
+          .card-date {
+            font-size: 1em;
+            font-family: $font2;
+            font-style: italic;
+            background-color: $color5;
+            border-radius: 30px;
+            padding: 5px 8px;
+            margin-top: 10px;
+            margin-right: 10px;
+            margin-left: 10px;
+            box-shadow: 0 5px 5px $shad1;
+            color: $color6;
           }
           .like-dislike {
             display: flex;
@@ -189,20 +222,12 @@ export default {
               justify-content: space-around;
               align-items: center;
               .icone {
+                color: green;
                 display: block;
                 position: relative;
                 cursor: pointer;
                 font-size: 2em;
                 text-shadow: 2px 2px 5px #1ed4add0;
-              }
-              .icone:hover {
-                top: 2px;
-                text-shadow: 2px 2px 3px #1ed4add0;
-                color: #3cc50e;
-              }
-              .icone:active {
-                top: 4px;
-                text-shadow: 2px 2px 1px #1ed4add0;
               }
               .like-count {
                 font-size: 1.2em;
@@ -224,20 +249,12 @@ export default {
               justify-content: space-around;
               align-items: center;
               .icone {
+                color: red;
                 display: block;
                 position: relative;
                 cursor: pointer;
                 font-size: 2em;
                 text-shadow: 2px 2px 5px #1ed4add0;
-              }
-              .icone:hover {
-                top: 2px;
-                text-shadow: 2px 2px 3px #1ed4add0;
-                color: $color4;
-              }
-              .icone:active {
-                top: 4px;
-                text-shadow: 2px 2px 1px #1ed4add0;
               }
               .like-count {
                 font-size: 1.2em;

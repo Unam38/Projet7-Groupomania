@@ -2,9 +2,11 @@
   <div id="article">
     <article class="article_detail">
       <div  class="card text-center">
-        <h4 class="card__title">{{ article.title }}</h4>
-        <img class="card__img" v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" />
-        <p class="card__body">{{ article.body }}</p>
+        <h4 class="card-title">{{ article.title }}</h4>
+        <img class="card-img" v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" />
+        <p class="card-body">{{ article.body }}</p>
+        <p class="card-date">Créé le : {{ article.createdAt | moment('calendar') }}</p>
+        <p v-if="article.createdAt !== article.updatedAt" class="card-date">Modifié le : {{ article.updatedAt | moment('calendar') }}</p>
         <div class="like-dislike">
           <div class="like">
             <b-icon-hand-thumbs-up class="icone"/>
@@ -15,9 +17,9 @@
             <p class="dislike-count">0</p>
           </div>
         </div>
-        <div v-if="article.user_id === user[0].id" class="boutons">
-          <router-link class="modify" :to="`/UpdateArticle/${article.id}`" title="Editez, modifiez votre Article"><b-icon-pencil class="icone1"/>Modifier...</router-link>
-          <button v-on:click.prevent="deleteArticle()" class="deleteArticle" title="Effacer votre message"><b-icon-trash class="icone2"/>Supprimer...</button>
+        <div v-if="article.user_id === user[0].id || user[0].isAdmin === 1" class="boutons">
+          <router-link class="modify" :to="`/UpdateArticle/${article.id}`" title="Editez, modifiez votre Article"><b-icon-pencil class="icone1"/>Editer...</router-link>
+          <button v-on:click.prevent="deleteArticle()" class="deleteArticle" title="Effacer votre message"><b-icon-trash class="icone2"/>Effacer...</button>
         </div>
         <section class="create_comment">
           <h2 class="title">Votre commentaire :</h2>
@@ -29,8 +31,9 @@
         <section class="display_comments">
           <div :key="index" v-for="(comment, index) in comments" class="commentaire">
             <p class="body">{{ comment.body }}</p>
-            <p class="date">{{ comment.date }}</p>
-            <router-link :to='`/UpdateComment/${comment.id}`' v-if="comment.users_id === user[0].id"><b-icon-pencil class="icone"/>Modifier commentaire</router-link>
+            <p class="date">{{ comment.createdAt | moment('calendar') }}</p>
+            <p v-if="comment.createdAt !== comment.updatedAt" class="date">Modifié le : {{ comment.updatedAt | moment('calendar') }}</p>
+            <router-link :to='`/UpdateComment/${comment.id}`' v-if="comment.users_id === user[0].id || user[0].isAdmin === 1"><b-icon-pencil class="icone"/>Modifier commentaire</router-link>
           </div>
         </section>
       </div>
@@ -51,8 +54,7 @@ export default {
       newComment: {
         body: "",
         users_id:"",
-        articles_id:"",
-        date: ""
+        articles_id:""
       },
       comments: []
     }
@@ -85,8 +87,7 @@ export default {
       axios.post(`auth/createComment`, {
           body: this.newComment.body,
           users_id: this.user[0].id,
-          articles_id: this.article.id,
-          date: this.newComment.date
+          articles_id: this.article.id
         })
         .then(response => {
           let data = response.data;
@@ -114,8 +115,12 @@ export default {
 
     },
     deleteArticle() {
+      if (
+        confirm("Etes-vous sûr de vouloir supprimer cet article ?")&&
+        confirm("C'est définif, sûr ?")
+      ) {
       axios.delete(`auth/article/delete/${this.id}`)
-      .then(response => {
+        .then(response => {
           let data = response.data;
           console.log(data);
           this.data = alert("L'article a bien été supprimé !");
@@ -127,6 +132,7 @@ export default {
           this.data = alert("erreur, pas d'effacement !")
           console.log(error);
         })
+      }
     }
   }
 }
@@ -136,67 +142,60 @@ export default {
 #article {
   background-color: $color6;;
   width: 100%;
-  margin-top: 100px;
+  margin-top: 130px;
   .article_detail {
     font-family: $font1;
     .card{
-      width: 80%;
+      width: 90%;
       margin: 1px auto;
       border-style: none;
-      border-radius: 20%;
+      border-radius: 30px;
       box-shadow: 0 10px $color3;;
       display: flex;
       flex-direction: column;
       align-items: center;
       background-color: $color1;
       padding:5px;
-      &__title {
-        font-size: 1.5em;
+      .card-title {
         font-family: $font1;
-        font-style: italic;
-        background-color: $shad1;
-        border-radius: 30px;
-        border: 1px solid $color2;
-        padding: 8px 10px;
-        margin-top: 10px;
-        margin-right: 10px;
-        margin-left: 10px;
-        box-shadow: 0 5px 5px #a8dcd4d2;
-        color: $color1;
-      }
-      &__img{
-        margin: 10px;
-        padding: 0;
-        border-radius: 30px;
-        img{
-            width: 100%;
+        font-size: 1em;
+        color: $color6;
+        @media screen and (min-width: 768px) {
+          font-size: 1.5em;
         }
       }
-      &__body{
-        background-color: $shad1;
+      .card-img {
+        max-width: 80%;
+        max-height: 300px;
+      }
+      .card-body {
         font-family: $font1;
-        color: $color1;
-        width: 96%;
-        max-height: 200px;
-        margin: 2%;
-        padding: 5px;
-        font-size: 1.5em;
-        border: 1px solid $color2;
-        border-radius: 30px;
-        box-shadow: 0 5px 5px $shad1;
+        font-size: 1em;
+        color: $color6;
         word-wrap: break-word;
         overflow: hidden;
-        text-overflow: ellipsis; 
+        text-overflow: ellipsis;
+        @media screen and (min-width: 768px) {
+          font-size: 1.5em;
+        }
+      }
+      .card-date {
+        font-family: $font1;
+        font-size: 1em;
+        color: $color5;
+        @media screen and (min-width: 768px) {
+          font-size: 1.5em;
+        }
       }
       .like-dislike {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        background-color:$color3;
+        background-color:$color2;
         color: $color6;
         padding: 0;
         border-radius: 20px;
-        width: 50%;
+        width: 90%;
         .like {
           width: 40%;
           padding: 0;
@@ -205,6 +204,7 @@ export default {
           justify-content: space-around;
           align-items: center;
           .icone {
+            color: green;
             display: block;
             position: relative;
             margin-left: 30px;
@@ -237,12 +237,12 @@ export default {
         .dislike {
           width: 40%;
           padding: 0;
-
           display: flex;
           flex-direction: row;
           justify-content: space-around;
           align-items: center;
           .icone {
+            color: red;
             display: block;
             position: relative;
             margin-left: 30px;
@@ -279,21 +279,28 @@ export default {
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        width: 60%;
+        width: 80%;
         .modify{
           display: block;
           position: relative;
+          width: 45%;
           margin: 10px auto;
           padding: 5px 10px 8px 10px;
           text-decoration: none;
           background-color: $color6;
           font-family: $font2;
           color: $color1;
-          font-size: 2em;
+          font-size: 0.9em;
           border: 1px solid $color2;
           box-shadow: 0 10px 10px $shad1;
           border-radius: 30px;
+          @media screen and (min-width: 768px) {
+            font-size: 1.5em;
           }
+          .icone1 {
+            font-size: 1.2em;
+          }
+        }
         .modify:hover {
           top: 2px;
           color: $color4;
@@ -306,16 +313,23 @@ export default {
         .deleteArticle {
           display: block;
           position: relative;
+          width: 45%;
           margin: 10px auto;
           padding: 5px 10px 8px 10px;
           text-decoration: none;
           background-color: $color4;
           font-family: $font2;
           color: $color1;
-          font-size: 2em;
+          font-size: 0.9em;
           border: 1px solid $color2;
           box-shadow: 0 10px 10px $shad1;
           border-radius: 30px;
+          @media screen and (min-width: 768px) {
+            font-size: 1.5em;
+          }
+          .icone2 {
+            font-size: 1.2em;
+          }
         }
         .deleteArticle:hover {
           top: 2px;
@@ -330,7 +344,7 @@ export default {
         }
       }
       .create_comment {
-        width: 50%;
+        width: 90%;
         font-family: $font2;
         background-color: $color6;
         margin: 20px auto;
@@ -344,10 +358,13 @@ export default {
           margin: 5px auto;
           font-size: 1.2em;
           color: $color1;
+          @media screen and (min-width: 768px) {
+            font-size: 1.5em;
+          }
         }
         .comment_corpse {
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
           margin: 5px auto;
           .commentaire {
             font-family: $font2;
@@ -397,7 +414,7 @@ export default {
             border-radius: 0 0 30px 0;
           }
           .date {
-            font-size: 0.5em;
+            font-size: 0.7em;
           }
           a {
             text-decoration: none;

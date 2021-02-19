@@ -1,9 +1,7 @@
 <template>
   <div id="nav">
     <b-navbar class="nav" type="dark" toggleable="md">
-      <router-link to="/">
-        <img src="../assets/images/icon-left-font-monochrome-black.svg" alt="logo de l'entreprise">
-      </router-link>
+      <img src="../assets/images/icon-left-font-monochrome-black.svg" alt="logo de l'entreprise">
       <div class="nav_menu">
         <b-nav-item class="item">
           <router-link to="/">
@@ -11,7 +9,10 @@
             <span class="texte">Accueil</span>
           </router-link>
         </b-nav-item>
-
+        <div v-if="authenticated" class="item">
+          <img v-bind:src="user[0].photo || 'https://picsum.photos/300/200?random'" class="avatar" alt="photo de profile" />
+          <p class="pseudo">{{ user[0].pseudo }}</p>
+        </div>
         <b-navbar-toggle class="btn" target="nav-collapse">
           <b-icon-menu-down class="icone"/>
         </b-navbar-toggle>
@@ -20,37 +21,31 @@
           <b-navbar-nav class="item-group">
             <template class="template-items" v-if="authenticated">
               <!-- Affiché quand l'utilisateur est connecté -->
-              <b-nav-item class="item">
-                <img v-bind:src="user.photo || 'https://picsum.photos/300/200?random'" alt="photo de profile" />
-                <p class="texte">{{ user.pseudo }}</p>
+              <b-nav-item v-if="user[0].isAdmin === 1" to="/Administration" class="item">
+                <b-icon-gear class="icone"/>
+                <p class="texte">Admin</p>
               </b-nav-item>
-              <b-nav-item class="item">
-                <router-link to="/Profile">
-                  <b-icon-person class="icone"/>
-                  <p class="texte">Profile</p>
-                </router-link>
+              <b-nav-item to="/Profile" class="item">
+                <b-icon-person class="icone"/>
+                <p class="texte">Profile</p>
               </b-nav-item>
-              <b-nav-item class="item">
+              <div class="item">
                 <b-icon-box-arrow-right class="icone"/>
                 <button v-on:click="logOut()" id="logout" class="logout">Déconnecter</button>
-              </b-nav-item>
+              </div>
             </template>
             <template class="template-items" v-else>
               <!-- Affiché si l'utilisateur n'est pas connu -->
               <div class="box">
-                <b-nav-item class="item">
-                  <router-link to="/Register">
-                    <b-icon-person-plus-fill class="icone" />
-                    <p class="texte">Inscription</p>
-                  </router-link>
+                <b-nav-item class="item" to="/Register">
+                  <b-icon-person-plus-fill class="icone" />
+                  <p class="texte">Inscription</p>
                 </b-nav-item>
               </div>
               <div class="box">
-                <b-nav-item class="item">
-                  <router-link to="/Login">
-                    <b-icon-box-arrow-in-right class="icone" />
-                    <p class="texte">Login</p>
-                  </router-link>
+                <b-nav-item class="item" to="/Login">
+                  <b-icon-box-arrow-in-right class="icone" />
+                  <p class="texte">Login</p>
                 </b-nav-item>
               </div>
             </template>
@@ -68,8 +63,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      revele: false,
-      open: false
+      isAdmin: false
     }
   },
   computed: {
@@ -111,26 +105,10 @@ export default {
     @media screen and (min-width: 517px) {
       flex-direction: row;
     }
-    
-    a {
-      display: inline-flex;
-      justify-content: center;
-      text-decoration: none;
-      width: 60%;
-      height: 5vh;
-      @media screen and (min-width: 450px) {
-        height: 8vh;
-      }
-      @media screen and (min-width: 1024px) {
-        height: 20vh;
-        max-width: 100%;
-      }
-      img {
-        display: block;
-        max-width: 100%;
-        max-height: 90%;
-        margin: 0 2% 2% 0;
-      }
+    img {
+      display: block;
+      max-width: 35%;
+      margin: 0 2% 2% 0;
     }
     &_menu {
       display: flex;
@@ -141,6 +119,10 @@ export default {
       }
       .item {
         margin-right: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         a{
           display: flex;
           flex-direction: column;
@@ -163,7 +145,37 @@ export default {
             }
           }
         }
+        .avatar {
+          width: 50px;
+          border-radius: 50%;
+          padding: 2%;
+        }
+        .pseudo {
+          font-size: 1em;
+          font-family: $font2;
+          color: lightgrey;
+          @media screen and (min-width: 1024px) {
+            font-size: 1.5em;
+          }
+        }
+        .icone{
+          margin-right: 5px;
+          color: $color6;
+          font-size: 1em;
+          @media screen and (min-width: 1024px) {
+            font-size: 1.5em;
+          }
+        }
+        .logout {
+          border-radius: 50%;
+          padding: 2%;
+          border: 1px solid $color6;
+          font-family: $font2;
+          color: $color6;
+          background-color: $color2;
+        }
       }
+      // boutton toggle colapse
       .btn {
         border: none;
         position: fixed;
@@ -176,41 +188,8 @@ export default {
       .nav-collapse {
         position: relative;
         top: 8px;
-        .item-group {
-          .template-items {
-            .box {
-              .item {
-                color: $color6;
-                a {
-                  display: flex;
-                  flex-direction: column;
-                  text-decoration: none;
-                  color: $color6;
-                  text-decoration: none;
-                  .icone{
-                    margin-right: 5px;
-                    color: $color6;
-                    font-size: 1em;
-                    @media screen and (min-width: 1024px) {
-                      font-size: 1.5em;
-                    }
-                  }
-                  .texte {
-                    color: $color6;
-                    font-size: 1em;
-                    font-family: $font2;
-                    @media screen and (min-width: 1024px) {
-                      font-size: 1.5em;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     }
   }
-  
 }
 </style>

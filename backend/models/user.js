@@ -91,7 +91,7 @@ User.findAll = (result) => {
 User.updateOne = (userId, user) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `UPDATE groupomania.users SET pseudo="${user.pseudo}", email="${user.email}", photo="${user.photo}", service="${user.service}" WHERE id=${userId}`,
+            `UPDATE groupomania.users SET pseudo="${user.pseudo}", email="${user.email}", photo="${user.photo}", service="${user.service}", isAdmin="${user.isAdmin}" WHERE id=${userId}`,
             function (error, result) {
                 if (error) {
                     reject (error);

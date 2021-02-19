@@ -1,13 +1,13 @@
 <template>
   <div class="modale-block">
-    <div class="modale card">
+    <div class="modale card card col-xs-11 col-sm-11 col-md-9 col-lg-8 col-xl-8">
       <h1 class="card-title">Modifiez vos données :</h1>
       <form action="" class="card-body profile">
         <div class="box">
           <label for="pseudo">Pseudo :</label>
           <input 
             type="text"
-            v-bind:placeholder="user[0].pseudo"
+            v-bind:placeholder="utilis.pseudo"
             v-model="form.pseudo"
             pattern="[a-zA-ZÀ-ÿ]{1,64}"
             />
@@ -16,7 +16,7 @@
           <label for="service">Service :</label>
           <input
             type="text"
-            v-bind:placeholder="user[0].service"
+            v-bind:placeholder="utilis.service"
             v-model="form.service"
             pattern="[a-zA-ZÀ-ÿ]{1,64}"
           />
@@ -25,7 +25,7 @@
           <label for="email">E-mail :</label>
           <input
             type="text"
-            v-bind:placeholder="user[0].email"
+            v-bind:placeholder="utilis.email"
             v-model="form.email"
           />
         </div>
@@ -33,12 +33,35 @@
           <label for="photo">Photo :</label>
           <input
             type="text"
-            v-bind:placeholder="user[0].photo"
+            v-bind:placeholder="utilis.photo"
             v-model="form.photo"
           />
         </div>
+        <div v-if="user[0].isAdmin === 1" class="box">
+          <label for="isAdmin">isAdmin :</label>
+          <input
+            type="text"
+            v-bind:placeholder="utilis.isAdmin"
+            v-model="form.isAdmin"
+          />
+        </div>
       </form>
-      <button v-on:click="updateProfile()" class="modify">Modifier ?</button>
+      <div class="btn-container">
+        <button 
+          v-on:click="updateProfile()"
+          class="boutton"
+          >
+          <span class="i1"><b-icon-signpost class="icone"/>Modifier</span>
+        </button>
+        <button 
+          v-if="user[0].isAdmin === 1"
+          v-on:click="deleteProfile()"
+          class="boutton b2"
+          >
+          <span class="i2"><b-icon-trash class="icone"/>Effacer</span>
+        </button>
+        <p v-if="user[0].isAdmin === 1" class="alerte">Attention l'effacement est irréversible !<br/>Et supprime toutes les publications de l'utilisateur !</p>
+      </div>
     </div>
   </div>
 </template>
@@ -56,8 +79,10 @@
           pseudo: "",
           service: "",
           email: "",
-          photo: ""
-        }
+          photo: "",
+          isAdmin: ""
+        },
+        utilis: {}
       }
     },
     mounted: function() {
@@ -65,10 +90,15 @@
     },
     methods: {
       getUserInfos() {
-        this.form.pseudo = this.user[0].pseudo;
-        this.form.service = this.user[0].service;
-        this.form.email = this.user[0].email;
-        this.form.photo = this.user[0].photo;
+        axios.get(`auth/user/${this.id}`)
+        .then(response => {
+          console.log(response);
+          this.form=response.data[0];
+        })
+        .catch(error => {
+          this.data = alert('erreur, rien a afficher !');
+          console.log(error + "mal joué !")
+        })
       },
       updateProfile() {
         axios.put(`auth/user/update/${this.id}`, this.form)
@@ -85,6 +115,20 @@
         .catch(error => {
           this.data = alert("Une erreur s'est produite !");
           console.Log(error);
+        })
+      },
+      deleteProfile() {
+        axios.delete(`auth/user/delete/${this.id}`)
+        .then(() => {
+          alert('Utilisateur supprimé !');
+          this.logOut();
+          this.$router.replace({
+            name: 'Administration'
+          });
+        })
+        .catch(error => {
+            console.log(error);
+            alert('une erreur !');
         })
       }
     },
@@ -108,46 +152,98 @@
   justify-content: center;
   align-content: center;
   .card {
-    background-color: $color6;
-    padding: 2%;
     display: flex;
     flex-direction: column;
-    position: relative;
-    margin: 120px auto;
+    justify-content: center;
+    align-content: center;;
+    margin: auto;
+    padding: 1% 1% 5% 1%;
+    background-color: $color2;
+    z-index: 1000;
     .card-title {
-      font-size: 1.5em;
-      color: $color4;
+      font-family: $font2;
+      text-align: center;
+      font-size: 1.2em;
+      color: $color6;
+      margin: 0;
+      @media screen and (min-width: 600px) {
+        font-size: 1.6em;
+      }
+      @media screen and (min-width: 1024px) {
+        font-size: 2em;
+      }
     }
-    .profile {
+    .profile{
       display: flex;
-      flex-direction: row;
-      justify-content: space-around;
+      flex-flow: row wrap;
       align-items: center;
-      background-color: $color6;
+      justify-content: space-around;
+      padding: 2%;
+      margin: 0 2% 0 2%;
+      width: 90%;
+      @media screen and (min-width: 600px) {
+        font-size: 1.6em;
+      }
       .box {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        margin: 2px auto;
-        border: 1px solid $color4;
-        label {
-          font-family: $font2;
-          font-size: 1.2em;
-          color: $color1;
-        }
-        input {
-          background-color: transparent;
-          border-style: none;
-        }
+        max-width: 30%;
       }
     }
-    .modify {
-      margin: 20px auto;
-      border-radius: 30px;
-      color: $color4;
-      background-color: $color6;
-      margin: 30px auto;
+    .btn-container{
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      margin: 0;
+      .boutton {
+        border: 2px solid $color6;
+        border-radius: 30px;
+        background-color: $color1;
+        color: $color6;
+        box-shadow: 6px 6px 8px $color6;
+        position: relative;
+        margin: 10px auto;
+        @media screen and (min-width: 600px) {
+          font-size: 1em;
+          padding: 2%;
+        }
+        .i1 {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2%;
+        }
+        .i2 {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2%;
+        }
+      }
+      .boutton:hover {
+        top: 2px;
+        cursor: pointer;
+        box-shadow: 2px 2px 6px $color6;
+        color: $color7;
+      }
+      .boutton:active {
+        top: 4px;
+        cursor: pointer;
+        box-shadow: 0 0 4px $color6;
+        color: $color4;
+      }
+      .alerte {
+        text-align: center;
+        background-color: $color6;
+        color: red;
+        font-family: $font1;
+        font-size: 0.8em;
+        padding: 2%;
+      }
     }
   }
 }
