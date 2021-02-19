@@ -55,8 +55,7 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
-      article: {
-      }
+      article: {}
     }
   },
   mounted: function() {

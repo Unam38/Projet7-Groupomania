@@ -1,8 +1,12 @@
 <template>
   <div class="home col-12">
-    <button class="btn">
-      <router-link to="/NewArticle">Créez un nouvel article <i class="fas fa-plus-circle"></i></router-link>
-    </button>
+    <div class="tri">
+      <button class="btn">
+        <router-link to="/NewArticle">Créez un nouvel article <i class="fas fa-plus-circle"></i></router-link>
+      </button>
+      <button v-on:click="getArticlesByCreatedAt()" class="btn createDate">Tri par Date de création</button>
+      <button v-on:click="getArticlesByUpdatedAt()" class="btn updateDate">Tri par date de mise à jour</button>
+    </div>
     <article class="home_detail">
       <div class="card-cart-container">
         <div
@@ -11,22 +15,12 @@
           class="col-xs-12 col-md-3 col-lg-3 card-container">
           <router-link :to='`/Article/${article.id}`'> 
             <div class="card">
-              <h4 class="card__title">{{ article.title }}</h4>
+              <h4 class="card__title">{{ article.title }} {{ article.id }}</h4>
               <div class="card__img">
                 <img v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" class="card-image"/>
               </div>
               <p class="card__body">{{ article.body }}</p>
               <p class="card-date">{{ article.createdAt | moment('calendar') }}</p>
-              <div v-if="authenticated" class="like-dislike">
-                <div class="like">
-                  <b-icon-hand-thumbs-up class="icone"/>
-                  <p class="like-count">0</p>
-                </div>
-                <div class="dislike">
-                  <b-icon-hand-thumbs-down class="icone"/>
-                  <p class="like-count">0</p>
-                </div>
-              </div>
             </div>
           </router-link>
         </div>
@@ -61,6 +55,28 @@ export default {
         this.data = alert("erreur, rien a afficher !");
         console.log('pas coucou' + error);
       })
+    },
+    async getArticlesByCreatedAt() {
+      await axios.get("auth/articles/createdAt/")
+      .then(response => {
+        let data = response.data;
+        this.articles = data.articles;
+      })
+      .catch(error => {
+        this.data = alert("erreur, rien a afficher !");
+        console.log('pas coucou' + error);
+      })
+    },
+    async getArticlesByUpdatedAt() {
+      await axios.get("auth/articles/updatedAt/")
+      .then(response => {
+        let data = response.data;
+        this.articles = data.articles;
+      })
+      .catch(error => {
+        this.data = alert("erreur, rien a afficher !");
+        console.log('pas coucou' + error);
+      })
     }
   },
   computed: {
@@ -76,23 +92,25 @@ export default {
 .home {
   margin-top: 50px;
   padding: 2%;
-  .btn{
-    display: block;
-    position: relative;
-    margin: 50px auto;
-    padding: 5px 10px 5px 10px;
-    cursor: pointer;
-    border-radius: 40% 30% 40% 30%;
-    border: none;
-    background: radial-gradient($color3, $color1);
-    margin-bottom: 20px;
-    font-size: 1.5em;
-    font-weight: bold;
-    box-shadow: 0 2px 8px $color3;
-    @media screen and (min-width: 1025px) {
-      margin-top: 80px;
-    }
-    a{
+  .tri{
+    display: flex;
+
+    .btn{
+      display: block;
+      position: relative;
+      margin: 50px auto;
+      padding: 5px 10px 5px 10px;
+      cursor: pointer;
+      border-radius: 40% 30% 40% 30%;
+      border: none;
+      background: radial-gradient($color3, $color1);
+      margin-bottom: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
+      box-shadow: 0 2px 8px $color3;
+      @media screen and (min-width: 1025px) {
+        margin-top: 80px;
+      }
       font-family: $font2;
       text-decoration: none;
       color: $color6;
@@ -100,8 +118,18 @@ export default {
         margin-left: 5px;
         font-size: 1em;
       }
+      a{
+        font-family: $font2;
+        text-decoration: none;
+        color: $color6;
+        i {
+          margin-left: 5px;
+          font-size: 1em;
+        }
+      }
     }
   }
+  
   .btn:hover {
     box-shadow: 0 2px 6px $color3;
     top: 2px;
@@ -188,71 +216,6 @@ export default {
             margin-left: 10px;
             box-shadow: 0 5px 5px $shad1;
             color: $color6;
-          }
-          .like-dislike {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            background-color:$color1;
-            color: lightgrey;
-            padding: 0;
-            border-radius: 20px;
-            width: 80%;
-            .like {
-              width: 40%;
-              padding: 0;
-              margin-left: 5%;
-              margin-right: 5%;
-              display: flex;
-              flex-direction: row;
-              justify-content: space-around;
-              align-items: center;
-              .icone {
-                color: green;
-                display: block;
-                position: relative;
-                cursor: pointer;
-                font-size: 2em;
-                text-shadow: 2px 2px 5px #1ed4add0;
-              }
-              .like-count {
-                font-size: 1.2em;
-                color: $color6;
-                margin-top: 10px;
-                padding: 2px 8px 2px 8px;
-                border: 1px solid lightgrey;
-                border-radius: 20px;
-                box-shadow: 2px 2px 1px $shad1;
-              }
-            }
-            .dislike {
-              width: 40%;
-              padding: 0;
-              margin-left: 5%;
-              margin-right: 5%;
-              display: flex;
-              flex-direction: row;
-              justify-content: space-around;
-              align-items: center;
-              .icone {
-                color: red;
-                display: block;
-                position: relative;
-                cursor: pointer;
-                font-size: 2em;
-                text-shadow: 2px 2px 5px #1ed4add0;
-              }
-              .like-count {
-                font-size: 1.2em;
-                color: $color6;
-                margin-top: 10px;
-                padding: 2px 8px 2px 8px;
-                border: 1px solid lightgrey;
-                border-radius: 20px;
-                box-shadow: 2px 2px 1px $shad1;
-              }
-            }
           }
         }
         .card:hover {

@@ -74,11 +74,39 @@ Article.findAll = (result) => {
     )
 };
 
+// Chercher tous les articles par date de creation OK
+Article.findAllByCreatedAt = (result) => {
+    db.query(
+        "SELECT * FROM groupomania.articles ORDER BY createdAt DESC", (err, res) => {
+            if (err) {
+                result(err, null);
+                return;
+            } else {
+                result(null, {articles: res});
+            }
+        }
+    )
+};
+
+// Chercher tous les articles par date de mise a jour OK
+Article.findAllByUpdatedAt = (result) => {
+    db.query(
+        "SELECT * FROM groupomania.articles ORDER BY updatedAt DESC", (err, res) => {
+            if (err) {
+                result(err, null);
+                return;
+            } else {
+                result(null, {articles: res});
+            }
+        }
+    )
+};
+
 // Chercher un article par son id OK
 Article.findOne = (articleId) => {
     return new Promise((resolve, reject)=> {
         db.query(
-            `SELECT a.id AS articleId, a.user_id AS user_id, a.title AS title, a.body AS body, a.image AS image, a.createdAt AS createdAt, a.updatedAt AS updatedAT, SUM(l.likes) AS likeCount, SUM(l.dislikes) AS dislikeCount FROM groupomania.articles a, groupomania.likes l WHERE a.id=${articleId} AND l.articles_id = a.id`, 
+            `SELECT a.id AS articleId, a.user_id AS user_id, a.title AS title, a.body AS body, a.image AS image, a.createdAt AS createdAt, a.updatedAt AS updatedAT, SUM(l.likes) AS likeCount, SUM(l.dislikes) AS dislikeCount FROM groupomania.articles a, groupomania.likes l WHERE a.id=${articleId} AND l.articles_id LIKE a.id`, 
             function (error, result, fields) {
                 if (error) { 
                     reject (error);

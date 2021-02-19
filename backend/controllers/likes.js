@@ -1,21 +1,10 @@
-const Like = require('../models/likes');
+const LikeDislike = require('../models/likes');
 const mysql = require('mysql');
 
-exports.addLikeDislike = (req, res, next) => {
-    Like.findByArticleId(req.params.articleId)
-    .then(like => {
-        const userId = req.body.userId;
-        const userWantsToLike = (req.body.like === 1);
-        const userWantsToDislike = (req.body.like === -1);
-        const userWantsToCancel = (req.body.like === 0);
-        const userCanLike = (!like.users_id.includes(userId));
-        const userCanDislike = (!like.users_id.includes(userId));
-        const userCanCancel = (like.users_id.includes(userId));
+exports.addLike = (req,res) => {
+    LikeDislike.findByArticleId(req.params.articleId)
+    console.log(req.body)
 
-        if (userWantsToLike && userCanLike) {Like.like(req.params.id, userId)};
-        if (userWantsToDislike && userCanDislike) {Like.dislike(req.params.id, userId)};
-        if (userWantsToCancel && userCanCancel) {Like.cancelLikeDislike(req.params.id, userId)};
-    })
     .then(like => res.status(200).json(like))
-    .catch(error => res.status(400).json({error}));
-};
+    .catch(error => res.status(500).json({error}));
+}

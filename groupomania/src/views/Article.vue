@@ -2,14 +2,14 @@
   <div id="article">
     <article class="article_detail">
       <div  class="card text-center">
-        <h4 class="card-title">{{ article.title }}</h4>
+        <h4 class="card-title">{{ article.title }} {{article}}</h4>
         <img class="card-img" v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" />
         <p class="card-body">{{ article.body }}</p>
         <p class="card-date">Créé le : {{ article.createdAt | moment('calendar') }}</p>
         <p v-if="article.createdAt !== article.updatedAt" class="card-date">Modifié le : {{ article.updatedAt | moment('calendar') }}</p>
         <div class="like-dislike">
           <div class="like">
-            <b-icon-hand-thumbs-up class="icone"/>
+            <b-icon-hand-thumbs-up v-on:click="like()" class="icone"/>
             <p class="like-count">{{ article.likeCount }}</p>
           </div>
           <div class="dislike">
@@ -18,7 +18,7 @@
           </div>
         </div>
         <div v-if="article.user_id === user[0].id || user[0].isAdmin === 1" class="boutons">
-          <router-link class="modify" :to="`/UpdateArticle/${article.id}`" title="Editez, modifiez votre Article"><b-icon-pencil class="icone1"/>Editer...</router-link>
+          <router-link class="modify" :to="`/UpdateArticle/${article.articleId}`" title="Editez, modifiez votre Article"><b-icon-pencil class="icone1"/>Editer...</router-link>
           <button v-on:click.prevent="deleteArticle()" class="deleteArticle" title="Effacer votre message"><b-icon-trash class="icone2"/>Effacer...</button>
         </div>
         <section class="create_comment">
@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     async getOneArticle() {
-      await axios.get('auth/article/'+this.id)
+      await axios.get(`auth/article/${this.id}`)
         .then(response => {
           let data = response.data;
           this.article = data[0];
@@ -132,6 +132,20 @@ export default {
           console.log(error);
         })
       }
+    },
+    async like() {
+      await axios.post(`auth/${this.id}/like`, {
+        userId:this.users_id
+        })
+      .then(response => {
+        let data = response.data;
+        this.data = alert('Like envoyé !');
+        console.log(data);
+      })
+      .catch(error => {
+        this.data = alert('erreur, like pas envoyé !')
+        console.Log(error);
+      })
     }
   }
 }

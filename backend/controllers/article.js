@@ -59,6 +59,30 @@ exports.getArticles = (req, res, next) => {
     })
 };
 
+// récupérer TOUS les articles triés par date de création OK
+exports.getArticlesByCreatedDate = (req, res, next) => {
+    Article.findAllByCreatedAt((err, data) => {
+        if(err){
+            res.status(500).send({
+                message: err.message || "des erreurs se sont produites",
+            });
+        }
+        res.send(data);
+    })
+};
+
+// récupérer TOUS les articles triés par date de mise ajour OK
+exports.getArticlesByUpdatedDate = (req, res, next) => {
+    Article.findAllByUpdatedAt((err, data) => {
+        if(err){
+            res.status(500).send({
+                message: err.message || "des erreurs se sont produites",
+            });
+        }
+        res.send(data);
+    })
+};
+
 // Récupérer un article précis à partir de son id OK
 exports.getOneArticle = (req, res, next) => {
     Article.findOne(req.params.id)

@@ -4,7 +4,11 @@ const router = express.Router();
 const likeCtrl = require('../controllers/likes');
 const auth = require('../middlewares/auth');
 
-// Interagir avec les likes Dislikes
-router.post('/:articleId/likesDislikes', auth, likeCtrl.addLikeDislike);
+// Ajouter un like à un article
+router.post('/:articleId/like', auth, likeCtrl.addLike);
+
+// Ajouter un dislike à un article
+//router.post('/:articleId/dislike', auth, likeCtrl.addDislike);
+
 
 module.exports = router;

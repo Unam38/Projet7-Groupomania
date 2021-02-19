@@ -16,6 +16,12 @@ router.put('/article/update/:articleId', auth, articleCtrl.modifyArticle);
 // Récupérer TOUS les articles OK
 router.get('/articles/', articleCtrl.getArticles);
 
+// Récupérer tous les articles par date de création
+router.get('/articles/createdAt/', auth, articleCtrl.getArticlesByCreatedDate);
+
+// Récupérer tous les articles par date de mise a jour
+router.get('/articles/updatedAt/', auth, articleCtrl.getArticlesByUpdatedDate);
+
 // Récupérer un article par son id OK
 router.get('/article/:id', auth, articleCtrl.getOneArticle);
 
