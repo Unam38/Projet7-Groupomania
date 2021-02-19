@@ -19,10 +19,3 @@ exports.addLikeDislike = (req, res, next) => {
     .then(like => res.status(200).json(like))
     .catch(error => res.status(400).json({error}));
 };
-
-exports.findLikes = (req, res) => {
-    console.log(req.params.articleId);
-    Like.findByArticleId(req.params.articleId)
-        .then(likes => res.status(200).json(likes))
-        .catch(error => res.status(404).json({ error }));
-};

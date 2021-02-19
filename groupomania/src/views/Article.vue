@@ -10,11 +10,11 @@
         <div class="like-dislike">
           <div class="like">
             <b-icon-hand-thumbs-up class="icone"/>
-            <p class="like-count">0</p>
+            <p class="like-count">{{ article.likeCount }}</p>
           </div>
           <div class="dislike">
             <b-icon-hand-thumbs-down class="icone"/>
-            <p class="dislike-count">0</p>
+            <p class="dislike-count">{{ article.dislikeCount }}</p>
           </div>
         </div>
         <div v-if="article.user_id === user[0].id || user[0].isAdmin === 1" class="boutons">
@@ -71,9 +71,8 @@ export default {
     })
   },
   methods: {
-    getOneArticle() {
-      axios
-        .get(`auth/article/${this.id}`)
+    async getOneArticle() {
+      await axios.get('auth/article/'+this.id)
         .then(response => {
           let data = response.data;
           this.article = data[0];
@@ -83,8 +82,8 @@ export default {
           console.log('pas bien' + error);
         })
     },
-    postComment() {
-      axios.post(`auth/createComment`, {
+    async postComment() {
+      await axios.post(`auth/createComment`, {
           body: this.newComment.body,
           users_id: this.user[0].id,
           articles_id: this.article.id
@@ -102,8 +101,8 @@ export default {
           console.log(error);
         });
     },
-    findAllArticleComments() {
-      axios.get(`auth/comments/article/${this.id}`)
+    async findAllArticleComments() {
+      await axios.get(`auth/comments/article/${this.id}`)
         .then(response => {
           this.comments = response.data;
           console.log(this.comments);
@@ -114,12 +113,12 @@ export default {
         })
 
     },
-    deleteArticle() {
+    async deleteArticle() {
       if (
         confirm("Etes-vous sûr de vouloir supprimer cet article ?")&&
         confirm("C'est définif, sûr ?")
       ) {
-      axios.delete(`auth/article/delete/${this.id}`)
+      await axios.delete(`auth/article/delete/${this.id}`)
         .then(response => {
           let data = response.data;
           console.log(data);

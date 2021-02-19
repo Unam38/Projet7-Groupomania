@@ -10,7 +10,7 @@
           :key="index"
           class="col-xs-12 col-md-3 col-lg-3 card-container">
           <router-link :to='`/Article/${article.id}`'> 
-            <div v-on:mounted="getLikes(article.id)" class="card">
+            <div class="card">
               <h4 class="card__title">{{ article.title }}</h4>
               <div class="card__img">
                 <img v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" class="card-image"/>
@@ -43,8 +43,7 @@ export default {
   name: "Home",
   data: () => {
     return {
-      articles: [],
-      likes: []
+      articles: []
     }
   },
   mounted: function() {
@@ -61,18 +60,6 @@ export default {
       .catch(error => {
         this.data = alert("erreur, rien a afficher !");
         console.log('pas coucou' + error);
-      })
-    },
-    async getLikes(articleId) {
-      console.log(typeof articleId);
-      await axios.get(`auth/likesDislikes/${articleId}`)
-      .then(response => {
-        let data = response.data;
-        this.likes = data
-      })
-      .catch(error => {
-        this.data = alert('Erreur mon chouchou !');
-        console.log('tu peux mieux faire lapinou !' + error);
       })
     }
   },
