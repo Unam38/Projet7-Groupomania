@@ -106,7 +106,7 @@ Article.findAllByUpdatedAt = (result) => {
 Article.findOne = (articleId) => {
     return new Promise((resolve, reject)=> {
         db.query(
-            `SELECT a.id AS articleId, a.user_id AS user_id, a.title AS title, a.body AS body, a.image AS image, a.createdAt AS createdAt, a.updatedAt AS updatedAT, SUM(l.likes) AS likeCount, SUM(l.dislikes) AS dislikeCount FROM groupomania.articles a, groupomania.likes l WHERE a.id=${articleId} AND l.articles_id LIKE a.id`, 
+            `SELECT a.id AS articleId, a.user_id AS user_id, a.title AS title, a.body AS body, a.image AS image, a.createdAt AS createdAt, a.updatedAt AS updatedAT, SUM(l.likes) AS likeCount, SUM(l.dislikes) AS dislikeCount FROM groupomania.articles a, groupomania.likes l WHERE a.id=${articleId} AND l.articles_id = a.id`, 
             function (error, result, fields) {
                 if (error) { 
                     reject (error);

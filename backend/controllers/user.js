@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
+const SECRET_KEY = process.env.SECRET_KEY;
 
 const User = require('../models/user');
 
@@ -32,7 +33,7 @@ exports.register = (req, res) => {
 // Connection d'un utilisateur existant OK
 exports.login = (req, res) => {
     User.findOne(req.body.email, (err, data) => {
-        console.log(data);
+        //console.log(data);
         if(!data){
             console.log('user pas trouvé')
             return res.status(401).json({error: 'utilisateur non trouvé'});
@@ -45,14 +46,13 @@ exports.login = (req, res) => {
             const payload = {
                 id: data.id,
                 pseudo: data.pseudo,
-                photo: data.photo,
                 isAdmin: data.isAdmin
             }
             res.status(200).json({
                 ...payload,
                 token: jwt.sign(
                 payload,
-                'nuzphfçè^àjpù ?8¨F?8C9IHMVB<?N../BM5725',
+                SECRET_KEY,
                 { expiresIn: 86400 }
             )
             })
@@ -64,7 +64,7 @@ exports.login = (req, res) => {
 // Vérification de token au login
 exports.getMyDatas = (req, res) => {
     let token = req.headers.authorization.split(' ')[1];
-    let decodedToken = jwt.verify(token, 'nuzphfçè^àjpù ?8¨F?8C9IHMVB<?N../BM5725');
+    let decodedToken = jwt.verify(token, SECRET_KEY);
     let id = JSON.parse(decodedToken.id);
     User.findById(id)
     .then(user => res.status(200).json(user))

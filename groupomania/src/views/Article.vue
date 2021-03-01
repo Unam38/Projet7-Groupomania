@@ -2,7 +2,7 @@
   <div id="article">
     <article class="article_detail">
       <div  class="card text-center">
-        <h4 class="card-title">{{ article.title }} {{article}}</h4>
+        <h4 class="card-title">{{ article.title }}</h4>
         <img class="card-img" v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" />
         <p class="card-body">{{ article.body }}</p>
         <p class="card-date">Créé le : {{ article.createdAt | moment('calendar') }}</p>
@@ -12,13 +12,18 @@
             <b-icon-hand-thumbs-up v-on:click="like()" class="icone"/>
             <p class="like-count">{{ article.likeCount }}</p>
           </div>
+          <button v-on:click="cancelVote()" class="btn btn-danger text-warning">Annuler Vote</button>
           <div class="dislike">
-            <b-icon-hand-thumbs-down class="icone"/>
+            <b-icon-hand-thumbs-down v-on:click="disLike()" class="icone"/>
             <p class="dislike-count">{{ article.dislikeCount }}</p>
           </div>
         </div>
         <div v-if="article.user_id === user[0].id || user[0].isAdmin === 1" class="boutons">
-          <router-link class="modify" :to="`/UpdateArticle/${article.articleId}`" title="Editez, modifiez votre Article"><b-icon-pencil class="icone1"/>Editer...</router-link>
+          <button class="modify" v-on:click="showUpdateArticle = true"><b-icon-pencil class="icone1"/>Editer...</button>
+          <div class="modal-overlay" v-if="showUpdateArticle">
+            <button class="close btn btn-danger text-light" @click="showUpdateArticle = false">X</button>
+            <UpdateArticle v-if="showUpdateArticle" />
+          </div>
           <button v-on:click.prevent="deleteArticle()" class="deleteArticle" title="Effacer votre message"><b-icon-trash class="icone2"/>Effacer...</button>
         </div>
         <section class="create_comment">
@@ -33,7 +38,11 @@
             <p class="body">{{ comment.body }}</p>
             <p class="date">{{ comment.createdAt | moment('calendar') }}</p>
             <p v-if="comment.createdAt !== comment.updatedAt" class="date">Modifié le : {{ comment.updatedAt | moment('calendar') }}</p>
-            <router-link :to='`/UpdateComment/${comment.id}`' v-if="comment.users_id === user[0].id || user[0].isAdmin === 1"><b-icon-pencil class="icone"/>Modifier commentaire</router-link>
+            <button v-on:click="showUpdateComment = true" v-if="comment.users_id === user[0].id || user[0].isAdmin === 1"><b-icon-pencil class="icone"/>Modifier commentaire</button>
+            <div class="modal-overlay" v-if="showUpdateComment">
+              <button class="close btn btn-danger text-light" @click="showUpdateComment = false">X</button>
+              <UpdateComment v-if="showUpdateComment" />
+            </div>
           </div>
         </section>
       </div>
@@ -44,19 +53,26 @@
 <script>
 import axios from "axios";
 import { mapGetters } from 'vuex'
+import UpdateArticle from '@/components/modales/UpdateArticle.vue'
+import UpdateComment from '@/components/modales/UpdateComment.vue'
+
 
 export default {
   name: "Article",
+  components: {
+    UpdateArticle,
+    UpdateComment
+  },
   data() {
     return {
       id: this.$route.params.id,
       article: {},
       newComment: {
-        body: "",
-        users_id:"",
-        articles_id:""
+        body: ""
       },
-      comments: []
+      comments: [],
+      showUpdateArticle: false,
+      showUpdateComment: false
     }
   },
   created() {
@@ -86,7 +102,7 @@ export default {
       await axios.post(`auth/createComment`, {
           body: this.newComment.body,
           users_id: this.user[0].id,
-          articles_id: this.article.id
+          articles_id: this.id
         })
         .then(response => {
           let data = response.data;
@@ -133,19 +149,56 @@ export default {
         })
       }
     },
-    async like() {
-      await axios.post(`auth/${this.id}/like`, {
-        userId:this.users_id
+    like() {
+      axios.post(`auth/${this.id}/likeDislike`, {
+        userId: this.user[0].id,
+        articleId: this.id,
+        likes: 1,
+        dislikes: 0
         })
-      .then(response => {
-        let data = response.data;
-        this.data = alert('Like envoyé !');
-        console.log(data);
-      })
-      .catch(error => {
-        this.data = alert('erreur, like pas envoyé !')
-        console.Log(error);
-      })
+        .then(response => {
+          let data = response.data;
+          console.log(data);
+          this.data = alert("le Like a bien été envoyé !");
+        })
+        .catch(error => {
+          this.data = alert("erreur, fausse route !");
+          console.log(error);
+        });
+    },
+    disLike() {
+      axios.post(`auth/${this.id}/likeDislike`, {
+        userId: this.user[0].id,
+        articleId: this.id,
+        likes: 0,
+        dislikes: 1
+        })
+        .then(response => {
+          let data = response.data;
+          console.log(data);
+          this.data = alert("le Dislike a bien été envoyé !");
+        })
+        .catch(error => {
+          this.data = alert("erreur, fausse route !");
+          console.log(error);
+        });
+    },
+    cancelVote() {
+      axios.post(`auth/${this.id}/likeDislike`, {
+        userId: this.user[0].id,
+        articleId: this.id,
+        likes: 0,
+        dislikes: 0
+        })
+        .then(response => {
+          let data = response.data;
+          console.log(data);
+          this.data = alert("l'annulation a bien été envoyé !");
+        })
+        .catch(error => {
+          this.data = alert("erreur, fausse route !");
+          console.log(error);
+        });
     }
   }
 }
@@ -323,6 +376,29 @@ export default {
           top: 8px;
           box-shadow: 0 2px 2px $shad1;
         }
+        .modal-overlay{
+          background-color: #15151693;
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 100;
+          .close {
+            position: absolute;
+            top: 40px;
+            right: 30px;
+            z-index: 110;
+            background-color: red;
+            width: 40px;
+            height: 40px;
+          }
+        }
         .deleteArticle {
           display: block;
           position: relative;
@@ -437,6 +513,29 @@ export default {
             .icone {
               color: $color4;
               margin-right: 10px;
+            }
+          }
+          .modal-overlay{
+            background-color: #15151693;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            .close {
+              position: absolute;
+              top: 40px;
+              right: 30px;
+              z-index: 110;
+              background-color: red;
+              width: 40px;
+              height: 40px;
             }
           }
         }

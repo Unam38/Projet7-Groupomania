@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import store from '@/store'
+import Login from '@/components/modales/Login.vue'
+import Register from '@/components/modales/Register.vue'
 
 Vue.use(VueRouter)
 
@@ -22,18 +24,12 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../components/modales/Login.vue')
+    component: Login
   },
   {
     path: '/register',
     name: 'Register',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../components/modales/Register.vue')
+    component: Register
   },
   {
     path: '/Profile',

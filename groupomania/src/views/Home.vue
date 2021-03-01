@@ -1,11 +1,11 @@
 <template>
   <div class="home col-12">
     <div class="tri">
-      <button class="btn">
-        <router-link to="/NewArticle">Créez un nouvel article <i class="fas fa-plus-circle"></i></router-link>
+      <button class="btn text-center">
+        <router-link to="/NewArticle"><b-icon-plus-circle class="icone"/><span class="long">Créez un nouvel</span> article</router-link>
       </button>
-      <button v-on:click="getArticlesByCreatedAt()" class="btn createDate">Tri par Date de création</button>
-      <button v-on:click="getArticlesByUpdatedAt()" class="btn updateDate">Tri par date de mise à jour</button>
+      <button v-on:click="getArticlesByCreatedAt()" class="btn text-center"><b-icon-sort-numeric-down class="icone"/><span class="long">Tri par Date de </span>création</button>
+      <button v-on:click="getArticlesByUpdatedAt()" class="btn text-center"><b-icon-sort-numeric-down class="icone"/><span class="long">Tri par date de </span>mise à jour</button>
     </div>
     <article class="home_detail">
       <div class="card-cart-container">
@@ -94,49 +94,46 @@ export default {
   padding: 2%;
   .tri{
     display: flex;
-
+    justify-content: space-around;
+    width: 100%;
+    padding: 0;
     .btn{
-      display: block;
-      position: relative;
-      margin: 50px auto;
-      padding: 5px 10px 5px 10px;
-      cursor: pointer;
-      border-radius: 40% 30% 40% 30%;
-      border: none;
-      background: radial-gradient($color3, $color1);
-      margin-bottom: 20px;
-      font-size: 1.5em;
-      font-weight: bold;
-      box-shadow: 0 2px 8px $color3;
-      @media screen and (min-width: 1025px) {
-        margin-top: 80px;
-      }
-      font-family: $font2;
-      text-decoration: none;
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid $color1;
+      background: linear-gradient(to bottom, $color1, $color5);
       color: $color6;
-      i {
-        margin-left: 5px;
+      font-size: 0.7em;
+      margin-top: 30px;
+      width: 25%;
+      border-radius: 30%;
+      @media screen and (min-width: 768px) {
         font-size: 1em;
       }
-      a{
-        font-family: $font2;
+      a {
         text-decoration: none;
         color: $color6;
-        i {
-          margin-left: 5px;
-          font-size: 1em;
+        @media screen and (min-width: 768px) {
+          display: inline-flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+      .icone {
+        font-size: 1.2em;
+        @media screen and (min-width: 768px) {
+        font-size: 1.5em;
+      }
+      }
+      .long{
+        @media screen and (max-width: 768px) {
+          display: none;
         }
       }
     }
-  }
-  
-  .btn:hover {
-    box-shadow: 0 2px 6px $color3;
-    top: 2px;
-  }
-  .btn:active {
-    box-shadow: 0 2px 2px $color3;
-    top: 6px;
   }
   &_detail {
     justify-content: center;

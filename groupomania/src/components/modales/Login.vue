@@ -1,25 +1,28 @@
 <template>
   <div class="login_container">
-      <div class="overlay"></div>
-      <div class="modale card">
-        <form @submit.prevent="submit" class="form">
-            <label for="email">Renseignez ici votre email :</label>
-            <input
-                v-model="form.email"
-                type="text" 
-                class="email"
-                placeholder="toto@titi.fr"
-            />
-            <label for="password">Renseignez ici votre Mot de passe :</label>
-            <input
-                v-model="form.password"
-                v-show-password-input
-                type="password" 
-                class="password"
-                placeholder="..."
-            />
-            <button class="login-btn" type="submit">Envoyer !</button>
+      <div class="card col-10 bg-info text-light">
+        <h1 class="card-title">Identifiez-vous ici !</h1>
+        <form class="card-body">
+            <div class="box">
+                <label for="email">Renseignez ici votre email :</label>
+                <input
+                    v-model="form.email"
+                    type="text" 
+                    class="email"
+                    placeholder="toto@titi.fr"
+                />
+            </div>
+            <div class="box">
+                 <label for="password">Renseignez ici votre Mot de passe :</label>
+                <input
+                    v-model="form.password"
+                    type="password" 
+                    class="password"
+                    placeholder="..."
+                />
+            </div>
         </form>
+        <button class="send btn btn-dark text-light" @click="submit()">Envoyer !</button>
       </div>
   </div>
 </template>
@@ -39,13 +42,13 @@ export default {
     },
     methods: {
         ...mapActions({
-            signin: 'auth/login'
+            login: 'auth/login'
         }),
         submit () {
-            this.signin(this.form)
+            this.login(this.form)
             .then(() => {
                 this.$router.replace({
-                    name: 'Home'
+                    name: 'Profile'
                 })
             })
         }
@@ -55,61 +58,44 @@ export default {
 
 <style lang="scss" scoped>
 .login_container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 100;
-    .overlay {
-        background-color: rgba(0,0,0,0.6);
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-    .modale {
-        background-color: #f1f1f1;
-        color: $color1;
-        padding: 20px;
-        top: 10%;
-        width: 300px;
-        border: 1px solid $color1;
-        box-shadow: 5px 5px 8px $shad1;
-        .form {
-            display: flex;
-            flex-direction: column;
+    width: 80%;
+    z-index: 120;
+    font-family: $font1;
+    .card {
+      padding: 1%;
+      .card-title {
+        text-align: center;
+        font-size: 1.2em;
+      }
+      .card-body {
+        .box {
+          display: flex;
+          justify-content: space-between;
+          label {
+            display: inline-flex;
             justify-content: center;
-            align-items: center;
-            width: 100%;
-            label {
-                display: inline-flex;
-                font-family: $font2;
-                font-size: 1em;
-                color: $color1;
-                border-bottom: 1px solid $color4;
-                width: 90%;
-                justify-content: center;
-                align-content: center;
-            }
-            input {
-                display: inline-flex;
-                justify-content: center;
-                font-family: $font1;
-                font-size: 0.8em;
-                border: none;
-                width: 100%;
-            }
-            .login-btn {
-                background-color: $color2;
-                color: $color6;
-                border-radius: 50%;
-            }
+            width: 25%;
+            text-decoration: underline;
+          }
+          input {
+            width: 75%;
+          }
         }
+      }
+      .send {
+        width: 30%;
+        margin: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 4px 4px $color6;
+      }
+      .send:hover {
+        box-shadow: 6px 6px $color6;
+      }
     }
 }
 </style>

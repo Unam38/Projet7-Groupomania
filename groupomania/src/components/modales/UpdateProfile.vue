@@ -1,6 +1,6 @@
 <template>
-  <div class="modale-block">
-    <div class="modale card card col-xs-11 col-sm-11 col-md-9 col-lg-8 col-xl-8">
+  <div class="profile-contain">
+    <div class="card col-10 bg-info text-light">
       <h1 class="card-title">Modifiez vos données :</h1>
       <form action="" class="card-body profile">
         <div class="box">
@@ -46,19 +46,19 @@
           />
         </div>
       </form>
-      <div class="btn-container">
+      <div class="boutons">
         <button 
           v-on:click="updateProfile()"
-          class="boutton"
+          class="send btn btn-dark text-light"
           >
-          <span class="i1"><b-icon-signpost class="icone"/>Modifier</span>
+          <b-icon-signpost class="icone"/>Modifier !
         </button>
         <button 
           v-if="user[0].isAdmin === 1"
           v-on:click="deleteProfile()"
-          class="boutton b2"
+          class="delete btn btn-danger text-light"
           >
-          <span class="i2"><b-icon-trash class="icone"/>Effacer</span>
+          <b-icon-trash class="icone"/>Effacer !
         </button>
         <p v-if="user[0].isAdmin === 1" class="alerte">Attention l'effacement est irréversible !<br/>Et supprime toutes les publications de l'utilisateur !</p>
       </div>
@@ -74,7 +74,6 @@
     name: "Profil",
     data() {
       return {
-        id: this.$route.params.id,
         form: {
           pseudo: "",
           service: "",
@@ -89,8 +88,8 @@
       this.getUserInfos()
     },
     methods: {
-      getUserInfos() {
-        axios.get(`auth/user/${this.id}`)
+      async getUserInfos() {
+        await axios.get(`auth/user/${this.user[0].id}`)
         .then(response => {
           console.log(response);
           this.form=response.data[0];
@@ -100,8 +99,8 @@
           console.log(error + "mal joué !")
         })
       },
-      updateProfile() {
-        axios.put(`auth/user/update/${this.id}`, this.form)
+      async updateProfile() {
+        await axios.put(`auth/user/update/${this.user[0].id}`, this.form)
         .then(response => {
           let data = response.data;
           console.log(data);
@@ -109,7 +108,7 @@
             "Utilisateur modifié !"
           );
           this.$router.replace({
-            name: 'Profile'
+            name: 'Home'
           })
         })
         .catch(error => {
@@ -117,19 +116,34 @@
           console.Log(error);
         })
       },
-      deleteProfile() {
-        axios.delete(`auth/user/delete/${this.id}`)
-        .then(() => {
-          alert('Utilisateur supprimé !');
-          this.logOut();
+      /*...mapActions({
+        logOutAction: 'auth/logout'
+      }),
+      logOut () {
+        this.logOutAction().then(() => {
           this.$router.replace({
-            name: 'Administration'
-          });
+            name: 'Home'
+          })
         })
-        .catch(error => {
-            console.log(error);
-            alert('une erreur !');
-        })
+      },*/
+      async deleteProfile() {
+        if (
+        confirm("Etes-vous sûr de vouloir supprimer cet article ?")&&
+        confirm("C'est définif, sûr ?")
+        ) {
+        await axios.delete(`auth/user/delete/${this.user[0].id}`)
+          .then(() => {
+            alert('Utilisateur supprimé !');
+            this.logOut();
+            this.$router.replace({
+              name: 'Home'
+            });
+          })
+          .catch(error => {
+              console.log(error);
+              alert('une erreur !');
+          })
+        }
       }
     },
     computed: {
@@ -141,110 +155,61 @@
 </script>
 
 <style lang="scss" scoped>
-.modale-block {
-  background: #000000c4;
-  position: absolute;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100vh;
+.profile-contain {
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
+  width: 80%;
+  z-index: 110;
   .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;;
-    margin: auto;
-    padding: 1% 1% 5% 1%;
-    background-color: $color2;
-    z-index: 1000;
+    padding: 1%;
     .card-title {
-      font-family: $font2;
       text-align: center;
-      font-size: 1.2em;
-      color: $color6;
-      margin: 0;
-      @media screen and (min-width: 600px) {
-        font-size: 1.6em;
-      }
-      @media screen and (min-width: 1024px) {
-        font-size: 2em;
-      }
+      font-size: 1.5em;
     }
-    .profile{
-      display: flex;
-      flex-flow: row wrap;
-      align-items: center;
-      justify-content: space-around;
-      padding: 2%;
-      margin: 0 2% 0 2%;
-      width: 90%;
-      @media screen and (min-width: 600px) {
-        font-size: 1.6em;
-      }
+    .card-body {
       .box {
         display: flex;
-        flex-direction: column;
-        max-width: 30%;
+        justify-content: space-between;
+        label {
+          display: inline-flex;
+          justify-content: center;
+          width: 25%;
+          text-decoration: underline;
+        }
+        input {
+          width: 75%;
+          font-size: 1em;
+          color: $color1;
+        }
       }
     }
-    .btn-container{
-      width: 100%;
+    .boutons {
       display: flex;
-      flex-direction: column;
       justify-content: space-around;
       align-items: center;
-      margin: 0;
-      .boutton {
-        border: 2px solid $color6;
-        border-radius: 30px;
-        background-color: $color1;
-        color: $color6;
-        box-shadow: 6px 6px 8px $color6;
-        position: relative;
-        margin: 10px auto;
-        @media screen and (min-width: 600px) {
-          font-size: 1em;
-          padding: 2%;
-        }
-        .i1 {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          padding: 2%;
-        }
-        .i2 {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          padding: 2%;
-        }
+      width: 100%;
+      .send, .delete {
+        width: 20%;
+        margin: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 4px 4px $color6;
       }
-      .boutton:hover {
-        top: 2px;
-        cursor: pointer;
-        box-shadow: 2px 2px 6px $color6;
-        color: $color7;
-      }
-      .boutton:active {
-        top: 4px;
-        cursor: pointer;
-        box-shadow: 0 0 4px $color6;
-        color: $color4;
+      .send:hover, .delete:hover {
+        box-shadow: 6px 6px $color6;
       }
       .alerte {
-        text-align: center;
-        background-color: $color6;
-        color: red;
-        font-family: $font1;
         font-size: 0.8em;
-        padding: 2%;
+        color: red;
+        background-color: $color6;
+        margin: 0;
+        padding: 1%;
+        border-radius: 20px;
       }
     }
+    
   }
 }
 </style>

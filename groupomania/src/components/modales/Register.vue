@@ -1,51 +1,64 @@
 <template>
     <div class="register-container">
-        <div class="overlay"></div>
-        <div class="modale card">
-            <form @submit.prevent="register()" class="form">
-                <label for="pseudo">Choisissez un Pseudo</label>
-                <input
-                    v-model="form.pseudo"
-                    required= true
-                    type="text" 
-                    class="pseudo"
-                    placeholder="Renseignez ici votre Pseudo :"
-                    pattern="[a-zA-ZÀ-ÿ]{1,64}"
-                />
-                <label for="service">Service :</label>
-                <input
-                    type="text"
-                    class="service"
-                    placeholder="Renseignez ici votre service :"
-                    v-model="form.service"
-                    pattern="[a-zA-ZÀ-ÿ]{1,30}"
-                />
-                <label for="email">Renseignez votre adresse email</label>
-                <input
-                    v-model="form.email"
-                    type="text" 
-                    class="email"
-                    placeholder="Renseignez ici votre email :"
-                    pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}"
-                />
-                <label for="photo">Choisissez-vous un avatar</label>
-                <input
-                    v-model="form.photo"
-                    placeholder="Saisissez l'url de votre avatar"
-                    id="photo"
-                    type="text"
-                />
-                <label for="password">Un mot de passe ici :</label>
-                <input
+        <div class="card col-10 bg-secondary text-light">
+            <h1 class="card-title">Pour vous inscrire, renseignez les champs ci-dessous :</h1>
+            <form class="card-body">
+                <div class="box">
+                    <label for="pseudo">Choisissez un Pseudo *</label>
+                    <input
+                        v-model="form.pseudo"
+                        required= true
+                        type="text" 
+                        class="pseudo"
+                        placeholder="Renseignez ici votre Pseudo :"
+                        pattern="[a-zA-ZÀ-ÿ]{1,64}"
+                    />
+                </div>
+                <div class="box">
+                    <label for="service">Service *</label>
+                    <input
+                        required= true
+                        type="text"
+                        class="service"
+                        placeholder="Renseignez ici votre service :"
+                        v-model="form.service"
+                        pattern="[a-zA-ZÀ-ÿ]{1,30}"
+                    />
+                </div>
+                <div class="box">
+                    <label for="email">Votre adresse email *</label>
+                    <input
+                        required= true
+                        v-model="form.email"
+                        type="text" 
+                        class="email"
+                        placeholder="Renseignez ici votre email :"
+                        pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}"
+                    />
+                </div>
+                <div class="box">
+                    <label for="photo">Choisissez-vous un avatar</label>
+                    <input
+                        v-model="form.photo"
+                        placeholder="Saisissez l'url de votre avatar"
+                        id="photo"
+                        type="text"
+                    />
+                </div>
+                <div class="box">
+                    <label for="password">Un mot de passe *</label>
+                    <input
                     v-model="form.password"
-                    v-show-password-input
+                    required= true
                     type="password" 
                     class="password"
                     placeholder="6 Caractères minimum avec une majuscule et un chiffre..."
                     pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
-                />
-                <button class="register-btn" type="submit">Envoyer !</button>
+                    />
+                </div>
             </form>
+            <p class="alerte">Les champs marqués d'un * sont obligatoires, merci.</p>
+            <button class="send btn text-dark" @click="register()">Envoyer !</button>
         </div>
     </div>
 </template>
@@ -79,7 +92,7 @@ export default {
                 "l'ultilisateur " + data.pseudo + " a bien été ajouté !"
                 );
                 this.$router.replace({
-                    name: 'Login'
+                    name: 'Home'
                 })
                 
             })
@@ -98,60 +111,57 @@ export default {
 
 <style lang="scss" scoped>
 .register-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 100;
-    .overlay {
-        background-color: rgba(0, 0, 0, 0.8);
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-    .modale {
-        background-color: #f1f1f1;
-        color: $color1;
-        padding: 20px;
-        top: 5%;
-        width: 70%;
-        border: 1px solid $color1;
-        box-shadow: 5px 5px 8px $shad1;
-        .form {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            label {
+    width: 80%;
+    z-index: 110;
+    font-family: $font1;
+    .card {
+        padding: 1%;
+        .card-title {
+        text-align: center;
+        font-size: 1.2em;
+        border-bottom: 2px solid $color4;
+        }
+        .card-body {
+            padding: 1%;
+            .box {
+                display: flex;
+                justify-content: space-between;
+                label {
                 display: inline-flex;
-                font-family: $font2;
-                font-size: 1em;
-                color: $color1;
-                border-bottom: 1px solid $color4;
-                width: 90%;
-                justify-content: center;
-                align-content: center;
-            }
-            input {
-                display: inline-flex;
-                justify-content: center;
-                font-family: $font1;
+                justify-content: flex-start;
                 font-size: 0.8em;
-                border: none;
-                width: 100%;
+                width: 25%;
+                text-decoration: underline;
+                }
+                input {
+                width: 75%;
+                }
             }
-            .register-btn {
-                background-color: $color2;
-                color: $color6;
-                border-radius: 50%;
-            }
+        }
+        .alerte {
+            color: $color4;
+            background-color: white;
+            text-align: center;
+            border: 2px solid $color4;
+            border-radius: 20px;
+            width: 70%;
+            margin: 5px auto 10px auto;;
+        }
+        .send {
+        width: 30%;
+        margin: auto;
+        font-weight: bold;
+        background-color: $color4;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 4px 4px $color6;
+        }
+        .send:hover {
+        box-shadow: 6px 6px $color6;
         }
     }
 }

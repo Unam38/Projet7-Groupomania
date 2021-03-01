@@ -8,7 +8,11 @@
         <div class="profile__section__identity__service">Vous travaillez dans le service : {{ user[0].service }}</div>
         <div class="profile__section__identity__image">Votre image d'avatar : <img v-bind:src="user[0].photo || 'https://picsum.photos/300/200?random'" alt="image avatar" class="profil_detail__avatar"/></div>
         <div class="modifier">Soufaitez-vous modifier ces informations ?</div>
-        <router-link :to='`/UpdateProfile/${user[0].id}`'><b-icon-pencil class="icone"/> Modifier !!</router-link>
+        <button class="modify" v-on:click="showUpdateProfile = true"><b-icon-pencil class="icone"/> Modifier !!</button>
+        <div class="modal-overlay" v-if="showUpdateProfile">
+            <button class="close btn btn-danger text-light" @click="showUpdateProfile = false">X</button>
+            <UpdateProfile v-if="showUpdateProfile" />
+          </div>
         <div class="effacer">
           <h2 class="titre">Effacer votre compte ?</h2>
           <h3 class="warning">Attention, ceci effacera également tous vos messages et commentaires...</h3>
@@ -48,12 +52,17 @@
 <script>
 import axios from "axios";
 import { mapGetters, mapActions } from 'vuex'
+import UpdateProfile from '@/components/modales/UpdateProfile'
 
 export default {
   name: "Profile",
+  components: {
+    UpdateProfile
+  },
   data: () => {
     return {
       articles: [],
+      showUpdateProfile: false
     }
   },
   mounted: function() {
@@ -130,6 +139,7 @@ export default {
     justify-content: center;
     align-items: center;
     background-color: $color6;
+    font-family: $font1;
     &__title {
       font-family: $font1;
       font-size: 1.5em;
@@ -174,33 +184,60 @@ export default {
         }
       }
       .modifier {
-        font-family: $font1;
-        font-size: 1em;
         color: $color6;
-      }  
-      a {
-        position: relative;
+      }
+      .modify{
         display: block;
-        margin: 5px auto;
+        position: relative;
+        width: 45%;
+        margin: 10px auto;
+        padding: 5px 10px 8px 10px;
         text-decoration: none;
-        color: $color1;
-        font-size: 1.5em;
         background-color: $color6;
+        font-family: $font2;
+        color: $color1;
+        font-size: 0.9em;
+        border: 1px solid $color2;
+        box-shadow: 0 10px 10px $shad1;
         border-radius: 30px;
-        box-shadow: 4px 4px 8px $color4;
-        padding: 2%;
-        .icone {
-          color: $color4;
-          font-size: 2em;
+        @media screen and (min-width: 768px) {
+          font-size: 1.5em;
+        }
+        .icone1 {
+          font-size: 1.2em;
         }
       }
-      a:hover {
+      .modify:hover {
         top: 2px;
-        box-shadow: 3px 3px 6px $color4;
+        color: $color4;
+        box-shadow: 0 8px 8px $shad1;
       }
-      a:active {
-        top: 4px;
-        box-shadow: 1px 1px 3px $color4;
+      .modify:active {
+        top: 8px;
+        box-shadow: 0 2px 2px $shad1;
+      }
+      .modal-overlay{
+        background-color: #15151693;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        .close {
+          position: absolute;
+          top: 40px;
+          right: 30px;
+          z-index: 110;
+          background-color: red;
+          width: 40px;
+          height: 40px;
+        }
       }
       .effacer {
         display: flex;
