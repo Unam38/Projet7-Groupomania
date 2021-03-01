@@ -74,6 +74,7 @@
     name: "Profil",
     data() {
       return {
+        id: this.$route.params.id,
         form: {
           pseudo: "",
           service: "",
@@ -89,43 +90,64 @@
     },
     methods: {
       async getUserInfos() {
-        await axios.get(`auth/user/${this.user[0].id}`)
-        .then(response => {
-          console.log(response);
-          this.form=response.data[0];
-        })
-        .catch(error => {
-          this.data = alert('erreur, rien a afficher !');
-          console.log(error + "mal joué !")
-        })
+        if(this.user[0].isAdmin === 1) {
+          await axios.get(`auth/user/${this.id}`)
+          .then(response => {
+            console.log(response);
+            this.form=response.data[0];
+          })
+          .catch(error => {
+            this.data = alert('erreur, rien a afficher !');
+            console.log(error + "mal joué !")
+          })
+        } else {
+          await axios.get(`auth/user/${this.user[0].id}`)
+          .then(response => {
+            console.log(response);
+            this.form=response.data[0];
+          })
+          .catch(error => {
+            this.data = alert('erreur, rien a afficher !');
+            console.log(error + "mal joué !")
+          })
+        }
       },
       async updateProfile() {
-        await axios.put(`auth/user/update/${this.user[0].id}`, this.form)
-        .then(response => {
-          let data = response.data;
-          console.log(data);
-          this.data = alert(
-            "Utilisateur modifié !"
-          );
-          this.$router.replace({
-            name: 'Home'
+        if(this.user[0].isAdmin === 1) {
+          await axios.put(`auth/user/update/${this.id}`, this.form)
+          .then(response => {
+            let data = response.data;
+            console.log(data);
+            this.data = alert(
+              "Utilisateur modifié !"
+            );
+            this.$router.replace({
+              name: 'Home'
+            })
           })
-        })
-        .catch(error => {
-          this.data = alert("Une erreur s'est produite !");
-          console.Log(error);
-        })
+          .catch(error => {
+            this.data = alert("Une erreur s'est produite !");
+            console.Log(error);
+          })
+        } else {
+          await axios.put(`auth/user/update/${this.user[0].id}`, this.form)
+          .then(response => {
+            let data = response.data;
+            console.log(data);
+            this.data = alert(
+              "Utilisateur modifié !"
+            );
+            this.$router.replace({
+              name: 'Home'
+            })
+          })
+          .catch(error => {
+            this.data = alert("Une erreur s'est produite !");
+            console.Log(error);
+          })
+        }
+        
       },
-      /*...mapActions({
-        logOutAction: 'auth/logout'
-      }),
-      logOut () {
-        this.logOutAction().then(() => {
-          this.$router.replace({
-            name: 'Home'
-          })
-        })
-      },*/
       async deleteProfile() {
         if (
         confirm("Etes-vous sûr de vouloir supprimer cet article ?")&&
@@ -159,8 +181,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 20px auto;
   width: 80%;
-  z-index: 110;
+  height: 100vh;
+  z-index: 120;
   .card {
     padding: 1%;
     .card-title {

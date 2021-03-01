@@ -10,9 +10,9 @@
         <div class="modifier">Soufaitez-vous modifier ces informations ?</div>
         <button class="modify" v-on:click="showUpdateProfile = true"><b-icon-pencil class="icone"/> Modifier !!</button>
         <div class="modal-overlay" v-if="showUpdateProfile">
-            <button class="close btn btn-danger text-light" @click="showUpdateProfile = false">X</button>
-            <UpdateProfile v-if="showUpdateProfile" />
-          </div>
+          <button class="close btn btn-danger text-light" @click="showUpdateProfile = false">X</button>
+          <UpdateProfile v-if="showUpdateProfile" />
+        </div>
         <div class="effacer">
           <h2 class="titre">Effacer votre compte ?</h2>
           <h3 class="warning">Attention, ceci effacera également tous vos messages et commentaires...</h3>
@@ -34,11 +34,11 @@
               <div v-if="authenticated" class="like-dislike">
                 <div class="like">
                   <b-icon-hand-thumbs-up class="icone"/>
-                  <p class="like-count">0</p>
+                  <p class="like-count">{{ article.likeCount }}</p>
                 </div>
                 <div class="dislike">
                   <b-icon-hand-thumbs-down class="icone"/>
-                  <p class="like-count">0</p>
+                  <p class="like-count">{{ article.dislikeCount }}</p>
                 </div>
               </div>
             </div>

@@ -15,7 +15,7 @@
           class="col-xs-12 col-md-3 col-lg-3 card-container">
           <router-link :to='`/Article/${article.id}`'> 
             <div class="card">
-              <h4 class="card__title">{{ article.title }} {{ article.id }}</h4>
+              <h4 class="card__title">{{ article.title }}</h4>
               <div class="card__img">
                 <img v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" class="card-image"/>
               </div>

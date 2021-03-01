@@ -1,7 +1,7 @@
 <template>
   <div id="article">
     <article class="article_detail">
-      <div  class="card text-center">
+      <div  class="card col-8 text-center">
         <h4 class="card-title">{{ article.title }}</h4>
         <img class="card-img" v-bind:src="article.image || 'https://picsum.photos/300/200?random'" alt="image" />
         <p class="card-body">{{ article.body }}</p>
@@ -236,7 +236,7 @@ export default {
       }
       .card-body {
         font-family: $font1;
-        font-size: 1em;
+        font-size: 0.8em;
         color: $color6;
         word-wrap: break-word;
         overflow: hidden;
@@ -247,7 +247,7 @@ export default {
       }
       .card-date {
         font-family: $font1;
-        font-size: 1em;
+        font-size: 0.8em;
         color: $color5;
         @media screen and (min-width: 768px) {
           font-size: 1.5em;
